@@ -1,0 +1,8 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Füllfarbe des Buttons -->
+    <solid android:color="#E2C0FF"/>
+
+
+    <!-- Ecken-Rundung -->
+    <corners android:radius="5dp"/>
+</shape>
