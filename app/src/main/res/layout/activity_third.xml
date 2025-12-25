@@ -6,69 +6,70 @@
     android:background="#EDEDED"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SecondActivity">
+    tools:context=".ThirdActivity">
 
     <include
-        android:id="@+id/header"
         layout="@layout/header"
+        android:id="@+id/header"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/text_view_id"
+        android:id="@+id/firstText"
+        android:text="We will support you \n along the way!"
+        android:textSize="30sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="140dp"
-        android:gravity="center"
+        android:layout_marginTop="80dp"
         android:padding="20dp"
-        android:text="What is the one big task you want to tackle?"
-        android:textSize="28sp"
+        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header" />
+        app:layout_constraintTop_toBottomOf="@id/header" /> <!-- WICHTIG: Bottom of HEADER -->
+
+
+    <TextView
+        android:id="@+id/text2"
+        android:text="But first, \n let's break it down into smaller tasks."
+        android:textSize="30sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:padding="20dp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/firstText" /> <!-- WICHTIG: Bottom of HEADER -->
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/addSmallTask"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:gravity="center"
-        android:hint="enter big task..."
+        android:hint="add small task"
         android:padding="16dp"
+        android:layout_marginTop="20dp"
         android:textColor="#727272"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text_view_id" />
+        app:layout_constraintTop_toBottomOf="@id/text2" />
 
-    <TextView
-        android:id="@+id/text2_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="20dp"
-        android:text="When do you want to be done with it?"
-        android:textSize="28sp"
+    <ImageView
+        android:id="@+id/add_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/add_icon"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editText" />
+        app:layout_constraintTop_toBottomOf="@id/addSmallTask"/>
 
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:gravity="center"
-        android:hint="tt.mm.jjjj"
-        android:padding="16dp"
-        android:textColor="#727272"
-        android:inputType="date"
-        android:drawableEnd="@drawable/calendar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text2_id" />
 
     <Button
         android:id="@+id/nextButton"
