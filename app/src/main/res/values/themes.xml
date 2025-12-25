@@ -10,4 +10,8 @@
     <style name="MyDatePickerTheme" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">#E2C0FF</item>
     </style>
+
+    <style name="MyDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">#E2C0FF</item>
+    </style>
 </resources>

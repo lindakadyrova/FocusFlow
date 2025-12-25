@@ -59,10 +59,11 @@
 
     <ImageView
         android:id="@+id/add_icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginTop="30dp"
         android:src="@drawable/add_icon"
+        android:contentDescription="Help icon"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
@@ -84,4 +85,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <ImageView
+        android:id="@+id/helpIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:src="@drawable/ic_question_mark"
+        android:contentDescription="Help icon"
+        app:layout_constraintEnd_toStartOf="@id/firstText"
+        app:layout_constraintTop_toTopOf="@id/firstText" />
 </androidx.constraintlayout.widget.ConstraintLayout>
