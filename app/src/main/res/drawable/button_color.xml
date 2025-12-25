@@ -1,8 +1,20 @@
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Füllfarbe des Buttons -->
-    <solid android:color="#E2C0FF"/>
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Normalzustand (nicht gedrückt) -->
+    <item android:state_pressed="false">
+        <shape android:shape="rectangle">
+            <solid android:color="#E2C0FF" />
+            <corners android:radius="5dp" />
+        </shape>
+    </item>
 
-    <!-- Ecken-Rundung -->
-    <corners android:radius="5dp"/>
-</shape>
+    <!-- Gedrückter Zustand (Hover) -->
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#D0A0FF" />
+            <corners android:radius="5dp" />
+        </shape>
+    </item>
+
+</selector>
