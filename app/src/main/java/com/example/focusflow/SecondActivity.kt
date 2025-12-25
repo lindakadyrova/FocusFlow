@@ -1,6 +1,8 @@
 package com.example.focusflow
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -16,9 +18,15 @@ class SecondActivity : AppCompatActivity() {
 
         val headerLayout = findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.header)
         val backButton = headerLayout.findViewById<TextView>(R.id.backArrow)
+        val nextButton = findViewById<Button>(R.id.nextButton)
 
         backButton.setOnClickListener {
             finish()
+        }
+
+        nextButton.setOnClickListener {
+            val intent = Intent(this, ThirdActivity::class.java)
+            startActivity(intent)
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
