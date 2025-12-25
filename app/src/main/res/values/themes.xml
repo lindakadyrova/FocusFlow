@@ -6,4 +6,8 @@
     </style>
 
     <style name="Theme.FocusFlow" parent="Base.Theme.FocusFlow" />
+
+    <style name="MyDatePickerTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">#E2C0FF</item>
+    </style>
 </resources>
