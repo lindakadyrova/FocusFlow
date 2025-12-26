@@ -15,62 +15,75 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <ImageView
+        android:id="@+id/helpIcon"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="10dp"
+        android:src="@drawable/ic_question_mark"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="Help icon"
+        app:layout_constraintEnd_toStartOf="@id/firstText"
+        app:layout_constraintTop_toTopOf="@id/firstText" />
+
     <TextView
         android:id="@+id/firstText"
-        android:text="We will support you \n along the way!"
-        android:textSize="30sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:padding="20dp"
+        android:layout_marginTop="40dp"
         android:gravity="center"
+        android:text="We will support you \n along the way!"
+        android:textSize="28sp"
+        android:textColor="#727272"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header" /> <!-- WICHTIG: Bottom of HEADER -->
-
+        app:layout_constraintTop_toBottomOf="@id/header" />
 
     <TextView
         android:id="@+id/text2"
-        android:text="But first, \n let's break it down into smaller tasks."
-        android:textSize="30sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:padding="20dp"
+        android:layout_marginTop="10dp"
         android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/firstText" /> <!-- WICHTIG: Bottom of HEADER -->
-
-    <EditText
-        android:id="@+id/addSmallTask"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:gravity="center"
-        android:hint="add small task"
-        android:padding="16dp"
-        android:layout_marginTop="20dp"
+        android:text="But first, \n let's break it down into smaller tasks."
         android:textColor="#727272"
-        android:inputType="text"
+        android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/text2" />
+        app:layout_constraintTop_toBottomOf="@id/firstText" />
 
-    <ImageView
-        android:id="@+id/add_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="30dp"
-        android:src="@drawable/add_icon"
-        android:contentDescription="Help icon"
-        android:background="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/addSmallTask"/>
+    <ScrollView
+        android:id="@+id/taskScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@id/nextButton"
+        app:layout_constraintTop_toBottomOf="@id/text2">
 
+        <LinearLayout
+            android:id="@+id/taskContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingBottom="20dp">
+
+            <ImageView
+                android:id="@+id/add_icon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="20dp"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="Add icon"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/add_icon" />
+        </LinearLayout>
+    </ScrollView>
 
     <Button
         android:id="@+id/nextButton"
@@ -85,13 +98,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageView
-        android:id="@+id/helpIcon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:src="@drawable/ic_question_mark"
-        android:contentDescription="Help icon"
-        app:layout_constraintEnd_toStartOf="@id/firstText"
-        app:layout_constraintTop_toTopOf="@id/firstText" />
 </androidx.constraintlayout.widget.ConstraintLayout>
