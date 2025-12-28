@@ -1,6 +1,7 @@
 package com.example.focusflow
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
@@ -24,13 +25,20 @@ class ThirdActivity : AppCompatActivity() {
         val taskContainer = findViewById<LinearLayout>(R.id.taskContainer)
         val addIcon = findViewById<ImageView>(R.id.add_icon)
         val scrollView = findViewById<ScrollView>(R.id.taskScrollView)
+        val nextButton = findViewById<Button>(R.id.nextButton)
 
-        // 1. BACK BUTTON
+        // BACK BUTTON
         backButton.setOnClickListener {
             finish()
         }
 
-        // 2. HILFE DIALOG
+        //NEXT BUTTON
+        nextButton.setOnClickListener {
+            val intent = Intent(this, FourthActivity::class.java)
+            startActivity(intent)
+        }
+
+        // HILFE DIALOG
         helpIcon.setOnClickListener {
             showHelpDialog()
         }
@@ -38,7 +46,7 @@ class ThirdActivity : AppCompatActivity() {
         // Standardmäßig ein Start-Feld anzeigen
         addNewTaskField(taskContainer, addIcon)
 
-        // 3. ADD ICON
+        // ADD ICON
         addIcon.setOnClickListener {
             addNewTaskField(taskContainer, addIcon)
             // Automatisch nach unten scrollen
