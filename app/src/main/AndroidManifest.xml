@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FocusFlow">
         <activity
+            android:name=".FifthActivity"
+            android:exported="false" />
+        <activity
             android:name=".FourthActivity"
             android:exported="false" />
         <activity
