@@ -32,3 +32,8 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# Kotlin Compiler Cache
+.kotlin/
+.kotlin_build/
+*.kotlin_module
