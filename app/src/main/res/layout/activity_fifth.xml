@@ -9,7 +9,6 @@
     android:background="#EDEDED"
     tools:context=".FifthActivity">
 
-    <!-- Das Include muss direkt im ConstraintLayout sein -->
     <include
         android:id="@+id/header"
         layout="@layout/header"
