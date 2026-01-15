@@ -23,10 +23,17 @@ class MainActivity : AppCompatActivity() {
         // Button finden
         val addTaskButton = findViewById<Button>(R.id.addTask)
 
+        val plannedTasksButton = findViewById<Button>(R.id.goToPlannedTasks)
+
         // OnClickListener hinzufügen
         addTaskButton.setOnClickListener {
             // Intent erstellen, um zur SecondActivity zu navigieren
             val intent = Intent(this, SecondActivity::class.java)
+            startActivity(intent)
+        }
+
+        plannedTasksButton.setOnClickListener {
+            val intent = Intent(this, FifthActivity::class.java)
             startActivity(intent)
         }
     }

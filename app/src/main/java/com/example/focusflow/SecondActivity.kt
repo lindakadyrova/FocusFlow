@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -16,6 +17,7 @@ import java.util.*
 class SecondActivity : AppCompatActivity() {
 
     private lateinit var editText2: EditText
+    private lateinit var taskNameInput: EditText
     private val calendar = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +28,7 @@ class SecondActivity : AppCompatActivity() {
         val headerLayout = findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.header)
         val backButton = headerLayout.findViewById<TextView>(R.id.backArrow)
         val nextButton = findViewById<Button>(R.id.nextButton)
+        taskNameInput = findViewById(R.id.editText)
         editText2 = findViewById(R.id.editText2)
 
         // Kalender-Dialog öffnen
@@ -38,8 +41,22 @@ class SecondActivity : AppCompatActivity() {
         }
 
         nextButton.setOnClickListener {
-            val intent = Intent(this, ThirdActivity::class.java)
-            startActivity(intent)
+            val taskName = taskNameInput.text.toString()
+            val dueDate = editText2.text.toString()
+            if (taskName.isEmpty()) {
+                taskNameInput.error = "Please name your task first!"
+            }
+            if (dueDate.isEmpty()) {
+                editText2.error = "Please put a date!"
+            }
+            if (taskName.isNotEmpty() && dueDate.isNotEmpty()) {
+                val intent = Intent(this, ThirdActivity::class.java)
+                intent.putExtra("EXTRA_TASK_NAME", taskName)
+                intent.putExtra("EXTRA_DATE", dueDate)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "The flow requires input!", Toast.LENGTH_SHORT).show()
+            }
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->

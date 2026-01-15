@@ -13,12 +13,16 @@ import androidx.core.view.WindowInsetsCompat
 
 class ThirdActivity : AppCompatActivity() {
 
+    private val subtaskEditTextList = mutableListOf<EditText>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_third)
 
         // Views finden
+        val taskName = intent.getStringExtra("EXTRA_TASK_NAME")
+        val dueDate = intent.getStringExtra("EXTRA_DATE")
         val headerLayout = findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.header)
         val backButton = headerLayout.findViewById<TextView>(R.id.backArrow)
         val helpIcon = findViewById<ImageView>(R.id.helpIcon)
@@ -34,8 +38,23 @@ class ThirdActivity : AppCompatActivity() {
 
         //NEXT BUTTON
         nextButton.setOnClickListener {
-            val intent = Intent(this, FourthActivity::class.java)
-            startActivity(intent)
+            val subtasks = ArrayList<String>()
+            for (editText in subtaskEditTextList) {
+                val text = editText.text.toString()
+                if (text.isNotBlank()) {
+                    subtasks.add(text)
+                }
+            }
+            if (subtasks.isEmpty()) {
+                Toast.makeText(this, "Try to break it down into at least one step!", Toast.LENGTH_SHORT).show()
+            } else {
+                val intent = Intent(this, FourthActivity::class.java)
+                // Pass EVERYTHING to the next screen
+                intent.putExtra("EXTRA_TASK_NAME", taskName)
+                intent.putExtra("EXTRA_DATE", dueDate)
+                intent.putStringArrayListExtra("EXTRA_SUBTASKS", subtasks)
+                startActivity(intent)
+            }
         }
 
         // HILFE DIALOG
@@ -82,6 +101,7 @@ class ThirdActivity : AppCompatActivity() {
         editText.gravity = Gravity.CENTER
         editText.setPadding(0, 0, (40 * density).toInt(), 0)
         editText.setTextColor(Color.parseColor("#727272"))
+        subtaskEditTextList.add(editText)
 
         // Trash Icon
         val deleteIcon = ImageView(this)
@@ -92,6 +112,7 @@ class ThirdActivity : AppCompatActivity() {
         deleteIcon.setImageResource(R.drawable.ic_delete)
         deleteIcon.setOnClickListener {
             container.removeView(rowLayout)
+            subtaskEditTextList.remove(editText)
         }
 
         rowLayout.addView(editText)
