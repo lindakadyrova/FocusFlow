@@ -34,13 +34,16 @@ class FourthActivity : AppCompatActivity() {
 
         addTaskButton.setOnClickListener {
             val selectedTime = spinner.selectedItem.toString()
-            val intent = Intent(this, FifthActivity::class.java)
-            intent.putExtra("EXTRA_TASK_NAME", taskName)
-            intent.putExtra("EXTRA_DATE", dueDate)
-            intent.putStringArrayListExtra("EXTRA_SUBTASKS", subtasks)
-            intent.putExtra("EXTRA_TIME", selectedTime)
+            val newTask = TaskData(
+                name = taskName ?: "New Task",
+                firstSubtask = subtasks?.get(0) ?: "No subtasks",
+                allSubtasks = subtasks ?: arrayListOf(),
+                time = selectedTime
+            )
 
-            // 3. Launch the final summary
+            TaskManager.tasks.add(newTask)
+
+            val intent = Intent(this, FifthActivity::class.java)
             startActivity(intent)
         }
 
