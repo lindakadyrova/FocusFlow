@@ -12,6 +12,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import com.google.gson.Gson
 
 class FourthActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +31,7 @@ class FourthActivity : AppCompatActivity() {
         val backButton = headerLayout.findViewById<TextView>(R.id.backArrow)
         val spinner: Spinner = findViewById(R.id.dropdown_menu)
         val time = arrayOf("< 30 Minutes", "30 Minutes", "60 Minutes", "90 Minutes", "> 90 Minutes")
-        val addTaskButton = findViewById<Button>(R.id.addtoTasks)
+        val addTaskButton = findViewById<android.widget.Button>(R.id.addtoTasks)
 
         backButton.setOnClickListener {
             finish()
@@ -34,17 +39,25 @@ class FourthActivity : AppCompatActivity() {
 
         addTaskButton.setOnClickListener {
             val selectedTime = spinner.selectedItem.toString()
-            val newTask = TaskData(
-                name = taskName ?: "New Task",
-                firstSubtask = subtasks?.get(0) ?: "No subtasks",
-                allSubtasks = subtasks ?: arrayListOf(),
-                time = selectedTime
-            )
+            lifecycleScope.launch(Dispatchers.IO) {
 
-            TaskManager.tasks.add(newTask)
+                val subtasksJson = Gson().toJson(subtasks)
+                val database = AppDatabase.getDatabase(this@FourthActivity)
 
-            val intent = Intent(this, FifthActivity::class.java)
-            startActivity(intent)
+                val newTask = TaskEntity(
+                    taskName = taskName ?: "Untitled Task",
+                    subtasksJson = subtasksJson,
+                    time = selectedTime,
+                    dueDate = dueDate ?: "No Date"
+                )
+
+                database.taskDao().insertTask(newTask)
+
+                withContext(Dispatchers.Main) {
+                    val intent = Intent(this@FourthActivity, FifthActivity::class.java)
+                    startActivity(intent)
+                }
+            }
         }
 
 
