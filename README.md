@@ -36,7 +36,7 @@ focus-flow/
 │   │   │   ├── java/                        # Kotlin source code
 │   │   │   ├── res/                         # Resources (XML, images)
 │   │   │   └── AndroidManifest.xml
-│   │   └── test/                           # Test files
+│   │   └── test/                            # Test files
 │   └── build.gradle
 ├── gradle/
 ├── build.gradle
