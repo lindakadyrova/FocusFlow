@@ -1,6 +1,7 @@
 package com.example.focusflow
 
 import android.os.Bundle
+import android.content.Intent
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -18,19 +19,36 @@ class FourthActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_fourth)
 
+        val taskName = intent.getStringExtra("EXTRA_TASK_NAME")
+        val dueDate = intent.getStringExtra("EXTRA_DATE")
+        val subtasks = intent.getStringArrayListExtra("EXTRA_SUBTASKS")
         val headerLayout = findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.header)
         val backButton = headerLayout.findViewById<TextView>(R.id.backArrow)
         val spinner: Spinner = findViewById(R.id.dropdown_menu)
-        val zeiten = arrayOf("< 30 Minuten", "30 Minuten", "60 Minuten", "90 Minuten", "> 90 Minuten")
-        val nextButton = findViewById<Button>(R.id.nextButton)
+        val time = arrayOf("< 30 Minutes", "30 Minutes", "60 Minutes", "90 Minutes", "> 90 Minutes")
+        val addTaskButton = findViewById<Button>(R.id.addtoTasks)
 
         backButton.setOnClickListener {
             finish()
         }
+
+        addTaskButton.setOnClickListener {
+            val selectedTime = spinner.selectedItem.toString()
+            val intent = Intent(this, FifthActivity::class.java)
+            intent.putExtra("EXTRA_TASK_NAME", taskName)
+            intent.putExtra("EXTRA_DATE", dueDate)
+            intent.putStringArrayListExtra("EXTRA_SUBTASKS", subtasks)
+            intent.putExtra("EXTRA_TIME", selectedTime)
+
+            // 3. Launch the final summary
+            startActivity(intent)
+        }
+
+
         val adapter = ArrayAdapter(
             this,
             R.layout.spinner_item, 
-            zeiten
+            time
         )
 
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
@@ -39,8 +57,8 @@ class FourthActivity : AppCompatActivity() {
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: android.view.View?,
                                         position: Int, id: Long) {
-                val options = zeiten[position]
-                Toast.makeText(this@FourthActivity, "Gewählt: $options", Toast.LENGTH_SHORT).show()
+                val options = time[position]
+                Toast.makeText(this@FourthActivity, "Selected: $options", Toast.LENGTH_SHORT).show()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
