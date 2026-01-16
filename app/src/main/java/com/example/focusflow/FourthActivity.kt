@@ -63,7 +63,7 @@ class FourthActivity : AppCompatActivity() {
 
         val adapter = ArrayAdapter(
             this,
-            R.layout.spinner_item, 
+            R.layout.spinner_item,
             time
         )
 

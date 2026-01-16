@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FocusFlow">
         <activity
-            android:name=".MainActivity"
+            android:name=".SixthActivity"
             android:exported="false" />
         <activity
             android:name=".FifthActivity"
@@ -27,7 +27,7 @@
             android:name=".SecondActivity"
             android:exported="false" />
         <activity
-            android:name=".SixthActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

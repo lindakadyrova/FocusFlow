@@ -9,5 +9,6 @@ data class TaskEntity(
     val taskName: String,
     val subtasksJson: String,
     val time: String,
-    val dueDate: String
+    val dueDate: String,
+    val isCompleted: Boolean = false
 )
