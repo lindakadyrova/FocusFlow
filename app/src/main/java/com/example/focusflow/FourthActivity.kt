@@ -1,13 +1,8 @@
 package com.example.focusflow
 
-import android.os.Bundle
 import android.content.Intent
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.Spinner
-import android.widget.TextView
-import android.widget.Toast
+import android.os.Bundle
+import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -30,8 +25,8 @@ class FourthActivity : AppCompatActivity() {
         val headerLayout = findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.header)
         val backButton = headerLayout.findViewById<TextView>(R.id.backArrow)
         val spinner: Spinner = findViewById(R.id.dropdown_menu)
-        val time = arrayOf("< 30 Minutes", "30 Minutes", "60 Minutes", "90 Minutes", "> 90 Minutes")
-        val addTaskButton = findViewById<android.widget.Button>(R.id.addtoTasks)
+        val addTaskButton = findViewById<Button>(R.id.addtoTasks)
+        val startNowButton = findViewById<Button>(R.id.goToPlannedTasks)
 
         backButton.setOnClickListener {
             finish()
@@ -39,8 +34,8 @@ class FourthActivity : AppCompatActivity() {
 
         addTaskButton.setOnClickListener {
             val selectedTime = spinner.selectedItem.toString()
-            lifecycleScope.launch(Dispatchers.IO) {
 
+            lifecycleScope.launch(Dispatchers.IO) {
                 val subtasksJson = Gson().toJson(subtasks)
                 val database = AppDatabase.getDatabase(this@FourthActivity)
 
@@ -54,13 +49,53 @@ class FourthActivity : AppCompatActivity() {
                 database.taskDao().insertTask(newTask)
 
                 withContext(Dispatchers.Main) {
+                    Toast.makeText(this@FourthActivity, "Task added to To-Do list!", Toast.LENGTH_SHORT).show()
+
+                    // Zurück zum Hauptbildschirm (FifthActivity)
                     val intent = Intent(this@FourthActivity, FifthActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     startActivity(intent)
                 }
             }
         }
 
+        startNowButton.setOnClickListener {
+            val selectedTime = spinner.selectedItem.toString()
 
+            if (taskName.isNullOrEmpty()) {
+                Toast.makeText(this, "Task name is missing!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (subtasks.isNullOrEmpty()) {
+                Toast.makeText(this, "No subtasks found!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            lifecycleScope.launch(Dispatchers.IO) {
+                val subtasksJson = Gson().toJson(subtasks)
+                val database = AppDatabase.getDatabase(this@FourthActivity)
+
+                val newTask = TaskEntity(
+                    taskName = taskName,
+                    subtasksJson = subtasksJson,
+                    time = selectedTime,
+                    dueDate = dueDate ?: "No Date"
+                )
+
+                val taskId = database.taskDao().insertTask(newTask)
+
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@FourthActivity, "Task saved and starting session!", Toast.LENGTH_SHORT).show()
+
+                    val intent = Intent(this@FourthActivity, SixthActivity::class.java)
+                    intent.putExtra("TASK_ID", taskId)
+                    startActivity(intent)
+                }
+            }
+        }
+
+        val time = arrayOf("< 30 Minutes", "30 Minutes", "60 Minutes", "90 Minutes", "> 90 Minutes")
         val adapter = ArrayAdapter(
             this,
             R.layout.spinner_item,
