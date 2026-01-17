@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -28,11 +29,31 @@ class FifthActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_fifth)
 
-        val backButton = findViewById<TextView>(R.id.backArrow)
+        val headerLayout =
+            findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.header)
+        val backButton = headerLayout.findViewById<TextView>(R.id.backArrow)
+
         val container = findViewById<LinearLayout>(R.id.finalTaskContainer)
         val addMoreButton = findViewById<android.widget.ImageView>(R.id.addMoreTasks)
 
         sharedPreferences = getSharedPreferences("FocusFlowPrefs", MODE_PRIVATE)
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+
+                val intent = Intent(this@FifthActivity, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(intent)
+                finish()
+            }
+        })
+
+        backButton.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+            finish()
+        }
 
         lifecycleScope.launch(Dispatchers.IO) {
             val database = AppDatabase.getDatabase(this@FifthActivity)
@@ -47,7 +68,6 @@ class FifthActivity : AppCompatActivity() {
                 }
 
                 savedTasks.forEach { task ->
-
                     val rowLayout = LinearLayout(this@FifthActivity)
                     rowLayout.orientation = LinearLayout.HORIZONTAL
                     rowLayout.gravity = android.view.Gravity.CENTER_VERTICAL
@@ -69,7 +89,8 @@ class FifthActivity : AppCompatActivity() {
                     bigTaskLabel.setTextColor(Color.parseColor("#9E9E9E"))
 
                     if (task.isCompleted) {
-                        bigTaskLabel.paintFlags = bigTaskLabel.paintFlags or android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
+                        bigTaskLabel.paintFlags =
+                            bigTaskLabel.paintFlags or android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
                         bigTaskLabel.alpha = 0.5f
                     }
 
@@ -77,7 +98,8 @@ class FifthActivity : AppCompatActivity() {
                     val subtasks: List<String> = Gson().fromJson(task.subtasksJson, subtaskListType)
 
                     val savedProgress = sharedPreferences.getInt("progress_${task.id}", 0)
-                    val currentSubtaskIndex = if (savedProgress < subtasks.size) savedProgress else 0
+                    val currentSubtaskIndex =
+                        if (savedProgress < subtasks.size) savedProgress else 0
 
                     val smallTaskLabel = TextView(this@FifthActivity)
 
@@ -94,7 +116,8 @@ class FifthActivity : AppCompatActivity() {
                     smallTaskLabel.setPadding(0, 0, 0, 10)
 
                     if (task.isCompleted) {
-                        smallTaskLabel.paintFlags = smallTaskLabel.paintFlags or android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
+                        smallTaskLabel.paintFlags =
+                            smallTaskLabel.paintFlags or android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
                         smallTaskLabel.alpha = 0.5f
                     }
 
@@ -146,10 +169,6 @@ class FifthActivity : AppCompatActivity() {
             val intent = Intent(this, SecondActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(intent)
-        }
-
-        backButton.setOnClickListener {
-            finish()
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
