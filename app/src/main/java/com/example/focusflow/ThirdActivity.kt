@@ -83,6 +83,7 @@ class ThirdActivity : AppCompatActivity() {
 
     private fun addNewTaskField(container: LinearLayout, addButton: ImageView) {
         val density = resources.displayMetrics.density
+        val paddingValue = (40 * density).toInt()
 
         // Weißer Container für EditText + Trash
         val rowLayout = FrameLayout(this)
@@ -99,7 +100,7 @@ class ThirdActivity : AppCompatActivity() {
         editText.hint = "add small task"
         editText.background = null
         editText.gravity = Gravity.CENTER
-        editText.setPadding(0, 0, (40 * density).toInt(), 0)
+        editText.setPadding(paddingValue, 0, paddingValue, 0)
         editText.setTextColor(Color.parseColor("#727272"))
         subtaskEditTextList.add(editText)
 
