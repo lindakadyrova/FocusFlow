@@ -94,7 +94,7 @@ class SixthActivity : AppCompatActivity() {
         val bigTaskText = findViewById<TextView>(R.id.bigTaskText)
         val smallTaskText = findViewById<TextView>(R.id.smallTaskText)
 
-        bigTaskText.text = "${currentTask.taskName} • ${currentTask.dueDate}"
+        bigTaskText.text = "${currentTask.taskName}"
 
         if (currentSubtaskIndex < subtasks.size) {
             smallTaskText.text = subtasks[currentSubtaskIndex]
