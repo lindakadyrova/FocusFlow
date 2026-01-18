@@ -125,8 +125,10 @@ class SixthActivity : AppCompatActivity() {
                     withContext(Dispatchers.Main) {
                         sharedPreferences.edit().remove("progress_${currentTask.id}").apply()
 
-                        val intent = Intent(this@SixthActivity, FifthActivity::class.java)
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        val intent = Intent(this@SixthActivity, SeventhActivity::class.java)
+                        intent.putExtra("ESTIMATED_MINUTES", currentTask.time)
+                        intent.putExtra("ACTUAL_MINUTES", 55)
+
                         startActivity(intent)
                         finish()
                     }
