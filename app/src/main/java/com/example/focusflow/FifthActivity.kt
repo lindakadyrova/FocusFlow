@@ -97,15 +97,19 @@ class FifthActivity : AppCompatActivity() {
                     val subtaskListType = object : TypeToken<List<String>>() {}.type
                     val subtasks: List<String> = Gson().fromJson(task.subtasksJson, subtaskListType)
 
-                    val savedProgress = sharedPreferences.getInt("progress_${task.id}", 0)
-                    val currentSubtaskIndex =
-                        if (savedProgress < subtasks.size) savedProgress else 0
+                    val prefsKey = "progress_${task.id}"
+
+                    val currentSubtaskIndex = if (sharedPreferences.contains(prefsKey)) {
+                        val saved = sharedPreferences.getInt(prefsKey, 0)
+                        if (saved < subtasks.size && saved >= 0) saved else 0
+                    } else {
+                        0
+                    }
 
                     val smallTaskLabel = TextView(this@FifthActivity)
 
                     if (subtasks.isNotEmpty()) {
-                        val currentSubtask = subtasks[currentSubtaskIndex]
-                        smallTaskLabel.text = currentSubtask
+                        smallTaskLabel.text = subtasks.getOrElse(currentSubtaskIndex) { subtasks[0] }
                     } else {
                         smallTaskLabel.text = "No subtasks"
                     }

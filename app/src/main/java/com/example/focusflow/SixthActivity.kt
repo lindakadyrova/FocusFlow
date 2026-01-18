@@ -31,52 +31,40 @@ class SixthActivity : AppCompatActivity() {
         val backButton = findViewById<TextView>(R.id.backArrow)
         val goToPlannedTasksButton = findViewById<Button>(R.id.goToPlannedTasks)
         val nextTaskButton = findViewById<Button>(R.id.addTask)
-        val bigTaskText = findViewById<TextView>(R.id.bigTaskText)
-        val smallTaskText = findViewById<TextView>(R.id.smallTaskText)
 
         sharedPreferences = getSharedPreferences("FocusFlowPrefs", MODE_PRIVATE)
-
         val taskId = intent.getLongExtra("TASK_ID", -1L)
 
         lifecycleScope.launch(Dispatchers.IO) {
             val database = AppDatabase.getDatabase(this@SixthActivity)
+            val allTasks = database.taskDao().getAllTasks()
+            val task = allTasks.find { it.id.toLong() == taskId }
 
             withContext(Dispatchers.Main) {
-                if (taskId != -1L) {
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        val allTasks = database.taskDao().getAllTasks()
-                        val task = allTasks.find { it.id.toLong() == taskId }
+                if (task != null) {
+                    currentTask = task
+                    val subtaskListType = object : TypeToken<List<String>>() {}.type
+                    subtasks = Gson().fromJson(task.subtasksJson, subtaskListType)
 
-                        withContext(Dispatchers.Main) {
-                            if (task != null) {
-                                currentTask = task
+                    val savedProgress = sharedPreferences.getInt("progress_${task.id}", -1)
 
-                                // Subtasks aus JSON laden
-                                val subtaskListType = object : TypeToken<List<String>>() {}.type
-                                subtasks = Gson().fromJson(task.subtasksJson, subtaskListType)
+                    currentSubtaskIndex = if (savedProgress == -1 || savedProgress >= subtasks.size) 0 else savedProgress
 
-                                // Gespeicherten Fortschritt laden für diese Task
-                                val savedProgress = sharedPreferences.getInt("progress_${task.id}", 0)
-                                currentSubtaskIndex = savedProgress
+                    saveProgress()
 
-                                // Ersten Subtask anzeigen
-                                updateTaskDisplay()
-                                updateButtonText()
-                            }
-                        }
-                    }
+                    updateTaskDisplay()
+                    updateButtonText()
                 }
             }
         }
 
         backButton.setOnClickListener {
-            saveProgress()
+            if (::currentTask.isInitialized) saveProgress()
             finish()
         }
 
         goToPlannedTasksButton.setOnClickListener {
-            saveProgress()
-
+            if (::currentTask.isInitialized) saveProgress()
             val intent = Intent(this@SixthActivity, FifthActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(intent)
@@ -94,24 +82,25 @@ class SixthActivity : AppCompatActivity() {
         val bigTaskText = findViewById<TextView>(R.id.bigTaskText)
         val smallTaskText = findViewById<TextView>(R.id.smallTaskText)
 
-        bigTaskText.text = "${currentTask.taskName}"
+        // Add this check to prevent crashes
+        if (!::currentTask.isInitialized) return
 
-        if (currentSubtaskIndex < subtasks.size) {
+        bigTaskText.text = currentTask.taskName
+        if (subtasks.isNotEmpty() && currentSubtaskIndex < subtasks.size) {
             smallTaskText.text = subtasks[currentSubtaskIndex]
         }
     }
 
     private fun updateButtonText() {
         val nextTaskButton = findViewById<Button>(R.id.addTask)
-
         val hasNextSubtask = currentSubtaskIndex < subtasks.size - 1
 
         if (hasNextSubtask) {
             nextTaskButton.text = "Next Task"
             nextTaskButton.setOnClickListener {
                 currentSubtaskIndex++
-                saveProgress()
                 updateTaskDisplay()
+                saveProgress()
                 updateButtonText()
             }
         } else {
@@ -124,11 +113,9 @@ class SixthActivity : AppCompatActivity() {
 
                     withContext(Dispatchers.Main) {
                         sharedPreferences.edit().remove("progress_${currentTask.id}").apply()
-
                         val intent = Intent(this@SixthActivity, SeventhActivity::class.java)
                         intent.putExtra("ESTIMATED_MINUTES", currentTask.time)
                         intent.putExtra("ACTUAL_MINUTES", 55)
-
                         startActivity(intent)
                         finish()
                     }
@@ -138,13 +125,10 @@ class SixthActivity : AppCompatActivity() {
     }
 
     private fun saveProgress() {
-        val editor = sharedPreferences.edit()
-        editor.putInt("progress_${currentTask.id}", currentSubtaskIndex)
-        editor.apply()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        saveProgress()
+        if (::currentTask.isInitialized) {
+            sharedPreferences.edit()
+                .putInt("progress_${currentTask.id}", currentSubtaskIndex)
+                .apply()
+        }
     }
 }
