@@ -19,6 +19,7 @@ class SecondActivity : AppCompatActivity() {
     private lateinit var editText2: EditText
     private lateinit var taskNameInput: EditText
     private val calendar = Calendar.getInstance()
+    private var databaseDate: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,17 +43,17 @@ class SecondActivity : AppCompatActivity() {
 
         nextButton.setOnClickListener {
             val taskName = taskNameInput.text.toString()
-            val dueDate = editText2.text.toString()
             if (taskName.isEmpty()) {
                 taskNameInput.error = "Please name your task first!"
             }
-            if (dueDate.isEmpty()) {
+            if (databaseDate.isEmpty()) {
                 editText2.error = "Please put a date!"
             }
-            if (taskName.isNotEmpty() && dueDate.isNotEmpty()) {
+            if (taskName.isNotEmpty() && databaseDate.isNotEmpty()) {
                 val intent = Intent(this, ThirdActivity::class.java)
                 intent.putExtra("EXTRA_TASK_NAME", taskName)
-                intent.putExtra("EXTRA_DATE", dueDate)
+                // Pass the sortable YYYY-MM-DD string to the database
+                intent.putExtra("EXTRA_DATE", databaseDate)
                 startActivity(intent)
             } else {
                 Toast.makeText(this, "The flow requires input!", Toast.LENGTH_SHORT).show()
@@ -78,8 +79,12 @@ class SecondActivity : AppCompatActivity() {
     }
 
     private fun updateDateInView() {
-        val myFormat = "dd.MM.yyyy"
-        val sdf = SimpleDateFormat(myFormat, Locale.GERMANY)
-        editText2.setText(sdf.format(calendar.time))
+        val displayFormat = SimpleDateFormat("dd.MM.yyyy", Locale.GERMANY)
+        val isoFormat = SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY)
+
+        val date = calendar.time
+
+        editText2.setText(displayFormat.format(date))
+        databaseDate = isoFormat.format(date)
     }
 }

@@ -19,6 +19,8 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class FifthActivity : AppCompatActivity() {
 
@@ -84,7 +86,16 @@ class FifthActivity : AppCompatActivity() {
                     textLayout.layoutParams = textParams
 
                     val bigTaskLabel = TextView(this@FifthActivity)
-                    bigTaskLabel.text = "${task.taskName} • ${task.dueDate}"
+                    val rawDate = task.dueDate // This is "yyyy-MM-dd"
+                    val formattedDate = try {
+                        val parser = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                        val formatter = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
+                        val dateDate = parser.parse(rawDate)
+                        formatter.format(dateDate!!)
+                    } catch (e: Exception) {
+                        rawDate
+                    }
+                    bigTaskLabel.text = "${task.taskName} • $formattedDate"
                     bigTaskLabel.textSize = 14f
                     bigTaskLabel.setTextColor(Color.parseColor("#9E9E9E"))
 
