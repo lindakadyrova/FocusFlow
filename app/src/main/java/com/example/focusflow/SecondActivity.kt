@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -29,11 +30,16 @@ class SecondActivity : AppCompatActivity() {
         val headerLayout = findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.header)
         val backButton = headerLayout.findViewById<TextView>(R.id.backArrow)
         val nextButton = findViewById<Button>(R.id.nextButton)
+
         taskNameInput = findViewById(R.id.editText)
         editText2 = findViewById(R.id.editText2)
+        val calendarIcon = findViewById<ImageView>(R.id.calendarIcon) // Das Icon finden
 
-        // Kalender-Dialog öffnen
         editText2.setOnClickListener {
+            showDatePicker()
+        }
+
+        calendarIcon.setOnClickListener {
             showDatePicker()
         }
 
@@ -43,16 +49,17 @@ class SecondActivity : AppCompatActivity() {
 
         nextButton.setOnClickListener {
             val taskName = taskNameInput.text.toString()
+
             if (taskName.isEmpty()) {
                 taskNameInput.error = "Please name your task first!"
             }
             if (databaseDate.isEmpty()) {
                 editText2.error = "Please put a date!"
             }
+
             if (taskName.isNotEmpty() && databaseDate.isNotEmpty()) {
                 val intent = Intent(this, ThirdActivity::class.java)
                 intent.putExtra("EXTRA_TASK_NAME", taskName)
-                // Pass the sortable YYYY-MM-DD string to the database
                 intent.putExtra("EXTRA_DATE", databaseDate)
                 startActivity(intent)
             } else {
@@ -86,5 +93,7 @@ class SecondActivity : AppCompatActivity() {
 
         editText2.setText(displayFormat.format(date))
         databaseDate = isoFormat.format(date)
+
+        editText2.error = null
     }
 }
