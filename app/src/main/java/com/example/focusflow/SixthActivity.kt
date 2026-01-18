@@ -22,6 +22,7 @@ class SixthActivity : AppCompatActivity() {
     private lateinit var subtasks: List<String>
     private var currentSubtaskIndex = 0
     private lateinit var sharedPreferences: SharedPreferences
+    private var sessionStartTime: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +35,8 @@ class SixthActivity : AppCompatActivity() {
 
         sharedPreferences = getSharedPreferences("FocusFlowPrefs", MODE_PRIVATE)
         val taskId = intent.getLongExtra("TASK_ID", -1L)
+
+        sessionStartTime = System.currentTimeMillis()
 
         lifecycleScope.launch(Dispatchers.IO) {
             val database = AppDatabase.getDatabase(this@SixthActivity)
@@ -59,12 +62,18 @@ class SixthActivity : AppCompatActivity() {
         }
 
         backButton.setOnClickListener {
-            if (::currentTask.isInitialized) saveProgress()
+            if (::currentTask.isInitialized) {
+                saveCurrentSessionTime()
+                saveProgress()
+            }
             finish()
         }
 
         goToPlannedTasksButton.setOnClickListener {
-            if (::currentTask.isInitialized) saveProgress()
+            if (::currentTask.isInitialized) {
+                saveCurrentSessionTime()
+                saveProgress()
+            }
             val intent = Intent(this@SixthActivity, FifthActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(intent)
@@ -76,6 +85,27 @@ class SixthActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+    }
+
+    private fun saveCurrentSessionTime() {
+        if (::currentTask.isInitialized) {
+            val now = System.currentTimeMillis()
+            val duration = now - sessionStartTime
+
+            val totalTimeKey = "total_time_${currentTask.id}"
+            val previouslySavedTime = sharedPreferences.getLong(totalTimeKey, 0L)
+
+            sharedPreferences.edit()
+                .putLong(totalTimeKey, previouslySavedTime + duration)
+                .apply()
+
+            sessionStartTime = now
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        saveCurrentSessionTime()
     }
 
     private fun updateTaskDisplay() {
@@ -106,16 +136,22 @@ class SixthActivity : AppCompatActivity() {
         } else {
             nextTaskButton.text = "FINISH"
             nextTaskButton.setOnClickListener {
+                saveCurrentSessionTime()
                 lifecycleScope.launch(Dispatchers.IO) {
                     val database = AppDatabase.getDatabase(this@SixthActivity)
                     val updatedTask = currentTask.copy(isCompleted = true)
                     database.taskDao().updateTask(updatedTask)
 
                     withContext(Dispatchers.Main) {
+                        val totalMillis = sharedPreferences.getLong("total_time_${currentTask.id}", 0L)
+                        val totalMinutes = (totalMillis / 1000) / 60
+
                         sharedPreferences.edit().remove("progress_${currentTask.id}").apply()
+                        sharedPreferences.edit().remove("total_time_${currentTask.id}").apply()
+
                         val intent = Intent(this@SixthActivity, SeventhActivity::class.java)
                         intent.putExtra("ESTIMATED_MINUTES", currentTask.time)
-                        intent.putExtra("ACTUAL_MINUTES", 55)
+                        intent.putExtra("ACTUAL_MINUTES", totalMinutes.toInt())
                         startActivity(intent)
                         finish()
                     }
